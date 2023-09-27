@@ -481,6 +481,7 @@ class NS_Node(Node):
         sql, params = cls._get_close_gap_sql(fromobj.lft,
                                              fromobj.rgt, fromobj.tree_id)
         cursor.execute(sql, params)
+        cls._commit_database_changes()
 
     @classmethod
     def _get_close_gap_sql(cls, drop_lft, drop_rgt, tree_id):
