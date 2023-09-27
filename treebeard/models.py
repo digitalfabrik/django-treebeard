@@ -650,7 +650,20 @@ class Node(models.Model):
 
     @classmethod
     def _get_database_cursor(cls, action):
+        if action == 'write':
+            if cls.cursor:
+                return cls.cursor
+            cls.cursor = cls._get_database_connection(action).cursor()
+            cls.cursor.execute("BEGIN")
+            return cls.cursor
         return cls._get_database_connection(action).cursor()
+
+    @classmethod
+    def _commit_database_changes(cls):
+        if not cls.cursor:
+            raise NotImplementedError #TODO just a placeholder
+        cls.cursor.execute("COMMIT")
+        cls.cursor = None
 
     class Meta:
         """Abstract model."""
